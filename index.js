@@ -2,6 +2,8 @@ var mongodb = require('mongodb');
 var express = require('express')
 var mongo = mongodb.MongoClient;
 var url = process.env.URL_SHORT_MONGOLAB_URI
+var re = /^[a-z0-9\-]+[.]\w+/i // tests for valid url
+
 
 var app = express()
 
@@ -12,9 +14,23 @@ app.get('/', function(request, response) {
 })
 
 app.get('/new/http://:URL', function(request, response) {
-  var orig_url = 'http://' + request.params.URL
-  var url_object = {'original_url': orig_url}
-  response.send(url_object)
+  if (!request.params.URL.match(re)) {
+    response.send({'error': 'Invalid url'})
+  } else {
+    var orig_url = 'http://' + request.params.URL
+    var url_object = {'original_url': orig_url}
+    response.send(url_object)
+  }
+})
+
+app.get('/new/https://:URL', function(request, response) {
+  if (!request.params.URL.match(re)) {
+    response.send({'error': 'Invalid url'})
+  } else {
+    var orig_url = 'https://' + request.params.URL
+    var url_object = {'original_url': orig_url}
+    response.send(url_object)
+  }
 })
 
 /*
