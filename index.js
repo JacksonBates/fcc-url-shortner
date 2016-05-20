@@ -1,6 +1,6 @@
 var mongodb = require('mongodb');
 var express = require('express')
-var MongoClient = mongodb.MongoClient;
+var mongo = mongodb.MongoClient;
 var url = process.env.URL_SHORT_MONGOLAB_URI
 
 var app = express()
@@ -11,7 +11,14 @@ app.get('/', function(request, response) {
   response.send('App is running')
 })
 
-MongoClient.connect(url, function (err, db) {
+app.get('/new/http://:URL', function(request, response) {
+  var orig_url = 'http://' + request.params.URL
+  var url_object = {'original_url': orig_url}
+  response.send(url_object)
+})
+
+/*
+mongo.connect(url, function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
@@ -23,6 +30,7 @@ MongoClient.connect(url, function (err, db) {
     db.close();
   }
 });
+*/
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port ', app.get('port'))
