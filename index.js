@@ -2,9 +2,8 @@ var mongodb = require('mongodb');
 var express = require('express')
 var http = require('http')
 var mongo = mongodb.MongoClient;
-var url = process.env.URL_SHORT_MONGOLAB_URI
+var url = process.env.URL_SHORT_MONGOLAB_URI.replace(/[ ]/,"")
 var re = /^[a-z0-9\-]+[.]\w+/i // tests for valid url
-
 
 var app = express()
 
@@ -12,6 +11,37 @@ app.set('port', (process.env.PORT || 5000))
 
 app.get('/', function(request, response) {
   response.send('App is running')
+})
+
+app.get('/:SHORT', function(request, response) {
+  //check if SHORT is in the DB
+  var short = request.params.SHORT
+  if (isNaN(short)) {
+    console.log('Waiting...')
+  } else {
+    var short_http = 'http://hidden-plains-19155.herokuapp.com/' + short
+    var short_https = 'https://hidden-plains-19155.herokuapp.com/' + short
+    mongo.connect(url, function(err, db) {
+      if (err) console.log('Unable to connect to mongoDB')
+      console.log('Connection established to database')
+      var urls = db.collection('urls')
+      urls.find({
+        short_url: { $in: [short_http, short_https]}
+      }).toArray(function(err, document) {
+        if (err) console.log('Error: something whent wrong when looking up the short_url')
+        if (document && document.length === 1) {
+          var redirect = document[0].orig_url
+          console.log("Redirecting to " + redirect)
+        } else {
+          console.log("Short URL does not exist")
+        }
+        db.close()
+        console.log('Connection to database has been closed')
+      })
+    })
+  }
+  //if SHORT in DB redirect to orig_url
+  //if SHORT not in DB, return to / page with an error message
 })
 
 app.get('/new/http://:URL', function(request, response) {
