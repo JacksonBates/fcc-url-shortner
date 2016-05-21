@@ -2,7 +2,8 @@ var mongodb = require('mongodb');
 var express = require('express')
 var http = require('http')
 var mongo = mongodb.MongoClient;
-var url = process.env.URL_SHORT_MONGOLAB_URI.replace(/[ ]/,"")
+var url = process.env.URL_SHORT_MONGOLAB_URI
+
 var re = /^[a-z0-9\-]+[.]\w+/i // tests for valid url
 
 var app = express()
@@ -11,6 +12,7 @@ app.set('port', (process.env.PORT || 5000))
 
 app.get('/', function(request, response) {
   response.send('App is running')
+  response.end()
 })
 
 app.get('/:SHORT', function(request, response) {
@@ -32,7 +34,10 @@ app.get('/:SHORT', function(request, response) {
         if (document && document.length === 1) {
           var redirect = document[0].orig_url
           console.log("Redirecting to " + redirect)
+          response.redirect(redirect)
         } else {
+          response.send('This short url does not exist. \n<a href="/">Go back</a>')
+          response.end()
           console.log("Short URL does not exist")
         }
         db.close()
@@ -47,6 +52,7 @@ app.get('/:SHORT', function(request, response) {
 app.get('/new/http://:URL', function(request, response) {
   if (!request.params.URL.match(re)) {
     response.send({'error': 'Invalid url'})
+    response.end()
   } else {
     var orig_url = 'http://' + request.params.URL
     //var url_object = {'original_url': orig_url}
@@ -75,6 +81,7 @@ app.get('/new/http://:URL', function(request, response) {
             urls.insert(url_object, function() {
                 var newUrlObject = {'orig_url': orig_url, 'short_url': short_url}
                 response.send(newUrlObject)
+                response.end()
                 console.log(JSON.stringify(url_object) + ' has been successfully added to the database')
               }
             )
@@ -82,6 +89,7 @@ app.get('/new/http://:URL', function(request, response) {
             // return orig_url and short_url object
             var url_object = {'orig_url': document[0].orig_url, 'short_url': document[0].short_url}
             response.send(url_object)
+            response.end()
           }
           db.close()
           console.log('Connection to database has been closed')
@@ -95,6 +103,7 @@ app.get('/new/http://:URL', function(request, response) {
 app.get('/new/https://:URL', function(request, response) {
   if (!request.params.URL.match(re)) {
     response.send({'error': 'Invalid url'})
+    response.end()
   } else {
     var orig_url = 'https://' + request.params.URL
     //var url_object = {'original_url': orig_url}
@@ -123,6 +132,7 @@ app.get('/new/https://:URL', function(request, response) {
             urls.insert(url_object, function() {
                 var newUrlObject = {'orig_url': orig_url, 'short_url': short_url}
                 response.send(newUrlObject)
+                response.end()
                 console.log(JSON.stringify(url_object) + ' has been successfully added to the database')
               }
             )
@@ -130,6 +140,7 @@ app.get('/new/https://:URL', function(request, response) {
             // return orig_url and short_url object
             var url_object = {'orig_url': document[0].orig_url, 'short_url': document[0].short_url}
             response.send(url_object)
+            response.end()
           }
           db.close()
           console.log('Connection to database has been closed')
