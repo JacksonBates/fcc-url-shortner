@@ -3,6 +3,17 @@
     <title>URL Shortener Microservice</title>
   <body>
     <h1>URL Shortener Microservice</h1>
-    App is running. More to follow.
+    Pass a url as a parameter and receive a shortend url in response.
+    Visit the shortened url in order to be redirected to the original link.
+    <strong>Note:</strong> URL may not actually be shorter, given the length of the heroku domain and subdomain names...
+
+    <h2>Example Creating a 'Shortened' URL</h2>
+    https://hidden-plains-19155.herokuapp.com/new/http://freecodecamp.com
+
+    <h2>Example response</h2>
+    <pre>{
+      orig_url: "http://freecodecamp.com",
+      short_url: "http://hidden-plains-19155.herokuapp.com/17"
+}</pre>
   </body>
 </html>

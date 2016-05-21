@@ -21,7 +21,9 @@ app.get('/:SHORT', function(request, response) {
   //check if SHORT is in the DB
   var short = request.params.SHORT
   if (isNaN(short)) {
-    console.log('Waiting...')
+    response.send('This short url does not exist. \n<a href="/">Go back</a>')
+    response.end()
+    console.log("Short URL does not exist")
   } else {
     var short_http = 'http://hidden-plains-19155.herokuapp.com/' + short
     var short_https = 'https://hidden-plains-19155.herokuapp.com/' + short
