@@ -9,9 +9,11 @@ var re = /^[a-z0-9\-]+[.]\w+/i // tests for valid url
 var app = express()
 
 app.set('port', (process.env.PORT || 5000))
+app.set('views', __dirname + '/views')
+app.set('view engine', 'ejs')
 
 app.get('/', function(request, response) {
-  response.send('App is running')
+  response.render('pages/index')
   response.end()
 })
 
