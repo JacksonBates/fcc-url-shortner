@@ -13,7 +13,12 @@
     "express": "^4.13.4",
     "mongodb": "^2.1.19"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "babel-eslint": "^6.0.4",
+    "eslint": "^2.10.2",
+    "eslint-plugin-babel": "^3.2.0",
+    "eslint-plugin-react": "^5.1.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JacksonBates/fcc-url-shortner.git"

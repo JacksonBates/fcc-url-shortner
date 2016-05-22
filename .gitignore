@@ -1,3 +1,4 @@
 node_modules
 work log.txt
 npm-debug.log
+.eslintrc
