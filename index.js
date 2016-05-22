@@ -1,8 +1,9 @@
-var mongodb = require('mongodb');
+var mongodb = require('mongodb')
 var express = require('express')
 var http = require('http')
-var mongo = mongodb.MongoClient;
+var mongo = mongodb.MongoClient
 var url = process.env.URL_SHORT_MONGOLAB_URI
+var orig_url = ""
 
 var re = /^[a-z0-9\-]+[.]\w+/i // tests for valid url
 
@@ -49,8 +50,6 @@ app.get('/:SHORT', function(request, response) {
       })
     })
   }
-  //if SHORT in DB redirect to orig_url
-  //if SHORT not in DB, return to / page with an error message
 })
 
 app.get('/new/http://:URL', function(request, response) {
@@ -58,16 +57,12 @@ app.get('/new/http://:URL', function(request, response) {
     response.send({'error': 'Invalid url'})
     response.end()
   } else {
-    var orig_url = 'http://' + request.params.URL
-    //var url_object = {'original_url': orig_url}
-    //console.log(url_object)
-    //lookupURL(orig_url)
+    orig_url = 'http://' + request.params.URL
     mongo.connect(url, function (err, db) {
       if (err) {
         console.log('Unable to connect to the mongoDB server. Error:', err);
       } else {
         console.log('Connection established to database');
-        // do some work here with the database.
         var urls = db.collection('urls')
         var numberOfURLS = 0
         urls.count({}, function(err, count) {
@@ -90,7 +85,6 @@ app.get('/new/http://:URL', function(request, response) {
               }
             )
           } else if (document.length === 1) {
-            // return orig_url and short_url object
             var url_object = {'orig_url': document[0].orig_url, 'short_url': document[0].short_url}
             response.send(url_object)
             response.end()
@@ -109,16 +103,12 @@ app.get('/new/https://:URL', function(request, response) {
     response.send({'error': 'Invalid url'})
     response.end()
   } else {
-    var orig_url = 'https://' + request.params.URL
-    //var url_object = {'original_url': orig_url}
-    //console.log(url_object)
-    //lookupURL(orig_url)
+    orig_url = 'https://' + request.params.URL
     mongo.connect(url, function (err, db) {
       if (err) {
         console.log('Unable to connect to the mongoDB server. Error:', err);
       } else {
         console.log('Connection established to database');
-        // do some work here with the database.
         var urls = db.collection('urls')
         var numberOfURLS = 0
         urls.count({}, function(err, count) {
@@ -141,7 +131,6 @@ app.get('/new/https://:URL', function(request, response) {
               }
             )
           } else if (document.length === 1) {
-            // return orig_url and short_url object
             var url_object = {'orig_url': document[0].orig_url, 'short_url': document[0].short_url}
             response.send(url_object)
             response.end()
